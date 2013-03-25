@@ -160,8 +160,8 @@ function loadBranches(user, repo, cb) {
 // Get files from a tree based on a given path and searchstr
 // -------
 
-function getFiles(tree, path, searchstr) {
-  var pathMatches = 0;
+function getFiles(tree, path, searchstr, exclude) {
+  var pathMatches = 0, exclude = exclude || [];
   function matchesPath(file) {
     if (file.path === path) return false; // skip current path
     var match = file.path.match(new RegExp("^"+path+"(.*)$"));
@@ -189,6 +189,9 @@ function getFiles(tree, path, searchstr) {
 
     // Mark match
     file.name = file.name.replace(matchSearch, "<b>$1</b>");
+
+    // Exclude.
+    if (_.contains(exclude, file.path)) return false;
 
     if (!matchesPath(file)) return false;
     pathMatches += 1;
@@ -227,7 +230,8 @@ function loadPosts(user, reponame, branch, path, cb) {
       app.state.jekyll = !err;
       app.state.config = config;
 
-      var root = config && config.prose && config.prose.rooturl ? config.prose.rooturl : "";
+      var root = config && config.prose && config.prose.rooturl ? config.prose.rooturl : "",
+          exclude = config && config.prose && config.prose.exclude ? config.prose.exclude : [];
       if (!path) path = root;
 
       repo.getTree(branch+"?recursive=true", function(err, tree) {
@@ -236,7 +240,7 @@ function loadPosts(user, reponame, branch, path, cb) {
           if (err) return cb("Branches couldn't be fetched");
           app.state.path = path ? path : "";
           app.state.branches = _.filter(branches, function(b) { return b !== branch });
-          cb(null, getFiles(tree, path, ""));
+          cb(null, getFiles(tree, path, "", exclude));
         });
       });
     });
