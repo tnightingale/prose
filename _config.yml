@@ -4,7 +4,7 @@ pygments: true
 permalink: none
 baseurl: ""
 oauth_client_id: edd0979a2551447235ea
-gatekeeper_url: http://localhost:9999
+gatekeeper_url: http://gh-gatekeeper.tnightingale.com
 exclude:
 - .gitignore
 - README.md
