@@ -80,7 +80,7 @@ _.mode = function(file) {
 // -------
 
 _.jekyll = function(path, file) {
-  return !!(path.match('_posts') && _.markdown(file));
+  return !!(_.markdown(file));
 };
 
 
